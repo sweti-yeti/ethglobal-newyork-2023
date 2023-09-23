@@ -11,9 +11,11 @@ func _ready():
 	generate_map_json()
 	load_map_json()
 
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
 	position.x -= speed * delta
+	Globals.distance = round(-position.x/32)
 
 
 func _on_finish_body_entered(body):
@@ -58,20 +60,20 @@ func generate_map_json():
 
 	map_json = JSON.stringify(hexmap)
 
+
 func load_map_json():
 	var tm:TileMap = $TileMap
 	var hexmap = JSON.parse_string(map_json)
-	print_debug(hexmap)
 	for r in hexmap.size():
 		var row = hexmap[r]
 		for c in row.size():
 			var chunk = row[c]
 			var dec = chunk.hex_decode()
-			print_debug(dec)
 			for i in dec.size():
 				var byte = dec[i]
 				for k in range(8):
 					var bit = 1 << (7-k)
 					if byte & bit > 0:
-						var coords = Vector2i((c*32+i)*8+k, r)
+						var coords = Vector2i((c*16+i)*8+k, r)
+						print_debug("Tile at: ", coords)
 						tm.set_cell(0, coords, 0, Vector2i(3,3))

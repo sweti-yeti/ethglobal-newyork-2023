@@ -1,12 +1,11 @@
-extends Node
+extends CenterContainer
 
-var distance = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	Signals.start_game.connect(_on_start_game)
+	pass # Replace with function body.
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _on_start_game():
-	distance = 0
+func _physics_process(delta):
+	$Label.text = str(Globals.distance)

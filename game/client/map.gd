@@ -3,6 +3,7 @@ extends Node2D
 @export var SPEED := 640
 var speed := 0
 var output_path = "res://mapdata.json"
+var map_json = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -42,9 +43,22 @@ func generate_map_json():
 	
 	for tile in tm.get_used_cells(0):
 		var target_y = tile[0] / 8
-		var bit = 1 << (tile[0] % 8)
+		var bit = 1 << (8-(tile[0] % 8 + 1))
 		bitmap[tile[1]][target_y] |= bit
 	
+	var hexmap = []
 	for i in bitmap:
-		print_debug(i.hex_encode())
-	
+		var hex = i.hex_encode()
+		hexmap.append([
+			hex.substr(0, 32),
+			hex.substr(32, 32),
+			hex.substr(64, 32),
+			hex.substr(96, 32)
+		])
+
+	print_debug(JSON.stringify(hexmap))
+	map_json = JSON.stringify(hexmap)
+
+func load_map_json():
+	# TODO: read from file
+	pass

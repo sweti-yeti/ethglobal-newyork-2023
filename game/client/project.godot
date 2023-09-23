@@ -27,6 +27,8 @@ window/size/borderless=true
 
 [physics]
 
+common/physics_ticks_per_second=30
+common/physics_jitter_fix=0.0
 2d/default_gravity=4096.0
 
 [rendering]

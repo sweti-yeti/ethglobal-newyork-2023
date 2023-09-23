@@ -27,7 +27,7 @@ func _on_start_game():
 	load_ui(hud)
 
 
-func _on_player_died():
+func _on_player_died(_distance):
 	load_ui(game_over_gui)
 
 

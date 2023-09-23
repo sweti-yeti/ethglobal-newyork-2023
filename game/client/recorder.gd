@@ -2,6 +2,8 @@ extends Node
 
 var game_tick = 0
 var event_log = []
+var map_data = []
+
 func _ready():
 	Signals.start_game.connect(_on_start_game)
 	Signals.player_jumped.connect(_on_player_jump)
@@ -32,6 +34,14 @@ func _on_player_jump():
 			event= "JUMP"
 		}
 	)
+
+
+func publish_game_log():
+	var log = JSON.stringify({
+		events = event_log,
+		map = map_data
+	})
+	print_debug(log)
 
 
 func _physics_process(_delta):

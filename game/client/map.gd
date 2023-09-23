@@ -63,6 +63,7 @@ func generate_map_json():
 
 func load_map_json():
 	var tm:TileMap = $TileMap
+	Recorder.map_data = map_json
 	var hexmap = JSON.parse_string(map_json)
 	for r in hexmap.size():
 		var row = hexmap[r]

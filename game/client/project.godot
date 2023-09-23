@@ -24,7 +24,6 @@ Recorder="*res://recorder.gd"
 [display]
 
 window/size/resizable=false
-window/size/borderless=true
 
 [physics]
 

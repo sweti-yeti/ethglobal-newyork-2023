@@ -21,7 +21,7 @@ export default function Game() {
 				<div></div>
 				<div></div>
 			</div>
-			<div id="status-notice" className="m-32"></div>
+			<div id="status-notice" className="m-32 p-32"></div>
 		</div>
  
         <Script src="./client/runner-onchain.js"/>

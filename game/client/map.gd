@@ -9,7 +9,7 @@ var map_json = null
 func _ready():
 	Signals.start_game.connect(_on_game_start)
 	generate_map_json()
-
+	load_map_json()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
@@ -56,9 +56,17 @@ func generate_map_json():
 			hex.substr(96, 32)
 		])
 
-	print_debug(JSON.stringify(hexmap))
 	map_json = JSON.stringify(hexmap)
 
 func load_map_json():
-	# TODO: read from file
-	pass
+	var tm:TileMap = $TileMap
+	var hexmap = JSON.parse_string(map_json)
+	print_debug(hexmap)
+	for row in hexmap:
+		for chunk in row:
+			print_debug(chunk.hex_decode())
+			for i in chunk.hex_decode():
+				for k in range(8):
+					var bit = 1 << k
+					if i & bit > 0:
+						print_debug("there's a tile")

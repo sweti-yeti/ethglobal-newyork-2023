@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://c87ksphfpol8f"]
+
+[ext_resource type="Script" path="res://start_gui.gd" id="1_qeihp"]
+
+[node name="StartGUI" type="CenterContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -23.0
+offset_top = -15.5
+offset_right = -23.0
+offset_bottom = -15.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_qeihp")
+
+[node name="Start" type="Button" parent="."]
+layout_mode = 2
+text = "Start"
+
+[connection signal="pressed" from="Start" to="." method="_on_start_pressed"]

@@ -1,0 +1,24 @@
+{
+    "tiles": [
+        ["list of", "uint256", "binpacked", "max 4"],
+        ["one list per row", "one bit per tile", "build left to right"],
+        ["array length", "20", "to match map height"],
+        ["array length", "20", "to match map height"],
+        ["array length", "20", "to match map height"],
+        ["array length", "20", "to match map height"],
+        ["array length", "20", "to match map height"],
+        ["array length", "20", "to match map height"],
+        ["array length", "20", "to match map height"],
+        ["array length", "20", "to match map height"],
+        ["array length", "20", "to match map height"],
+        ["array length", "20", "to match map height"],
+        ["array length", "20", "to match map height"],
+        ["array length", "20", "to match map height"],
+        ["array length", "20", "to match map height"],
+        ["array length", "20", "to match map height"],
+        ["array length", "20", "to match map height"],
+        ["array length", "20", "to match map height"],
+        ["array length", "20", "to match map height"],
+        ["array length", "20", "to match map height"]
+    ]
+}

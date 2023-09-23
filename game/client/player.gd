@@ -20,9 +20,11 @@ func _physics_process(delta):
 	# Handle Jump.
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
+		Signals.player_jumped.emit()
 
 	move_and_slide()
 
 
 func remove_player():
+	Signals.game_over.emit(round(position.x/32))
 	queue_free()

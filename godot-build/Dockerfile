@@ -26,4 +26,10 @@ ENV GODOTFLAGS="use_llvm=yes arch=rv64"
 
 RUN scons -Q --debug=explain $GODOTFLAGS
 
-# TODO: clean up build files
+RUN cp bin/godot.linuxbsd.editor.rv64.llvm /usr/bin/godot
+
+WORKDIR /opt/riscv
+
+RUN rm -rf godot
+
+RUN godot --headless --version

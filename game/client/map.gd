@@ -62,11 +62,16 @@ func load_map_json():
 	var tm:TileMap = $TileMap
 	var hexmap = JSON.parse_string(map_json)
 	print_debug(hexmap)
-	for row in hexmap:
-		for chunk in row:
-			print_debug(chunk.hex_decode())
-			for i in chunk.hex_decode():
+	for r in hexmap.size():
+		var row = hexmap[r]
+		for c in row.size():
+			var chunk = row[c]
+			var dec = chunk.hex_decode()
+			print_debug(dec)
+			for i in dec.size():
+				var byte = dec[i]
 				for k in range(8):
-					var bit = 1 << k
-					if i & bit > 0:
-						print_debug("there's a tile")
+					var bit = 1 << (7-k)
+					if byte & bit > 0:
+						var coords = Vector2i((c*32+i)*8+k, r)
+						tm.set_cell(0, coords, 0, Vector2i(3,3))

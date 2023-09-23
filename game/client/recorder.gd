@@ -42,6 +42,7 @@ func publish_game_log():
 		map = map_data
 	})
 	print_debug(log)
+	JavaScriptBridge.eval("window.submitScore()")
 
 
 func _physics_process(_delta):

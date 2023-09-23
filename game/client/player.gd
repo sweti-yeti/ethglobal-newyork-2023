@@ -26,5 +26,5 @@ func _physics_process(delta):
 
 
 func remove_player():
-	Signals.game_over.emit(round(position.x/32))
+	Signals.game_over.emit(round(position.x))
 	queue_free()

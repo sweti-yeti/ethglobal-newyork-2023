@@ -1,7 +1,6 @@
 extends Node
 
 signal start_game
-signal player_died
-signal player_won
+signal player_died(distance:float)
+signal player_won(distance:float)
 signal player_jumped
-signal game_over(distance:float)

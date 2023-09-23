@@ -5,7 +5,8 @@ var event_log = []
 func _ready():
 	Signals.start_game.connect(_on_start_game)
 	Signals.player_jumped.connect(_on_player_jump)
-	Signals.game_over.connect(_on_end_game)
+	Signals.player_died.connect(_on_end_game)
+	Signals.player_won.connect(_on_end_game)
 
 
 func _on_start_game():
@@ -18,7 +19,7 @@ func _on_end_game(distance: float):
 		{
 			frame= game_tick,
 			distance=distance,
-			event= "END_GAME"
+			event= "GAME_OVER"
 		}
 	)
 	print_debug(event_log)

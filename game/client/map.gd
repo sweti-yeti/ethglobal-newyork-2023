@@ -19,13 +19,13 @@ func _physics_process(delta):
 func _on_finish_body_entered(body):
 	if body is Player:
 		speed = 0
-		Signals.player_won.emit()
+		Signals.player_won.emit(round(-position.x/32))
 
 
 func _on_ded_body_entered(body):
 	if body is Player:
 		speed = 0
-		Signals.player_died.emit()
+		Signals.player_died.emit(round(-position.x/32))
 
 
 func _on_game_start():

@@ -2,8 +2,6 @@ extends Node2D
 
 @export var SPEED := 640
 var speed := 0
-var player_is_alive = true
-var player_won = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -12,19 +10,18 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
-	if player_is_alive && !player_won:
-		position.x -= speed * delta
+	position.x -= speed * delta
 
 
 func _on_finish_body_entered(body):
 	if body is Player:
-		player_won = true
+		speed = 0
 		Signals.player_won.emit()
 
 
 func _on_ded_body_entered(body):
 	if body is Player:
-		player_is_alive = false
+		speed = 0
 		Signals.player_died.emit()
 
 

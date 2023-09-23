@@ -16,14 +16,10 @@ func _ready():
 func load_ui(scene:PackedScene):
 	var inst = scene.instantiate()
 	if active_gui != null:
-		print_debug("Will free: ", active_gui)
 		remove_child(active_gui)
-		active_gui.process_mode = Node.PROCESS_MODE_DISABLED
 		active_gui.queue_free()
 		active_gui = null
-
 	active_gui = inst
-	print_debug(active_gui)
 	add_child(inst)
 
 

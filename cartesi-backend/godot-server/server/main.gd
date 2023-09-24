@@ -5,11 +5,11 @@ var rollup_server = OS.get_environment("ROLLUP_HTTP_SERVER_URL")
 
 var finish_request_args = {
 	url = rollup_server + "/finish",
-	custom_headers = PackedStringArray(),
-	method = HTTPClient.METHOD_GET,
-	request_data = {
+	custom_headers = PackedStringArray(["content-type: application/json"]),
+	method = HTTPClient.METHOD_POST,
+	request_data = JSON.stringify({
 		status = "accept"
-	}
+	})
 }
 
 func _ready():
@@ -23,12 +23,13 @@ func query_state():
 	add_child(http_request)
 	http_request.request_completed.connect(self._http_request_completed)
 
+	print(finish_request_args)
 	# Perform the HTTP request. The URL below returns a PNG image as of writing.
 	var error = http_request.request(
 		finish_request_args.url,
 		finish_request_args.custom_headers,
 		finish_request_args.method,
-		JSON.stringify(finish_request_args.request_data)
+		finish_request_args.request_data
 	)
 
 	if error != OK:
@@ -40,12 +41,12 @@ func _http_request_completed(result, response_code, headers, body:PackedByteArra
 	if result != HTTPRequest.RESULT_SUCCESS:
 		push_error("Error requesting rollup server")
 	
-	if body.is_empty():
-		print("Empty response received")
+	if response_code == 202 || body.is_empty():
+		print("No pending rollup request, trying again")
 		query_state()
 	else:
 		var response_raw = body.get_string_from_utf8()
-		print(response_raw)
+		print("Parsing JSON response: ", response_raw)
 		var response = JSON.parse_string(response_raw)
 		if response["request_type"] == "advance_state":
 			handle_advance(response["data"])

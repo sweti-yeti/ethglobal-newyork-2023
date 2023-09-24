@@ -15,6 +15,12 @@ run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[physics]
+
+common/physics_ticks_per_second=30
+common/physics_jitter_fix=0.0
+2d/default_gravity=4096.0
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

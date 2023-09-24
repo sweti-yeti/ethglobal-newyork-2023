@@ -9,6 +9,11 @@ interface IGameContext {
 const GameContext = createContext<IGameContext>({
 	submitScore: async () => {
 		console.log("Godot called this!")
+		// Retrieve game log
+		// call Cartesi InputBox with game log
+		// poll for outputs
+		// If valid score
+		// 	run voucher
 	}
 })
 

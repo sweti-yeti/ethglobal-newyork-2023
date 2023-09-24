@@ -1,5 +1,7 @@
 extends CenterContainer
 
+func _ready():
+	$VBoxContainer/Label.text = str(Globals.distance)
 
 func _on_restart_pressed():
 	print_debug("Restarting game")

@@ -13,7 +13,7 @@ contract Leaderboard {
     mapping(address => ScoreRecord) scores;
     mapping(address => bytes) gameplayLogs;
 
-    function submitScore(uint64 time, uint64 distance, bytes memory log) public {
+    function submitScore(uint64 time, uint64 distance, bytes calldata log) public {
         ScoreRecord memory current = scores[msg.sender];
         if(leaderboardSize == 0) {
             // Empty leaderboard, so just record the score
@@ -85,7 +85,6 @@ contract Leaderboard {
         return gameplayLogs[wallet];
     }
     
-
     
     function getScore(address wallet) external view returns (ScoreRecord memory) {
         return scores[wallet];

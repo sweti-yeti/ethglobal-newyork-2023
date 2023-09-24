@@ -7,8 +7,8 @@ var map_json = null
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Signals.start_game.connect(_on_game_start)
-	generate_map_json()
-	load_map_json()
+	#generate_map_json()
+	#load_map_json()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -40,7 +40,7 @@ func generate_map_json():
 	
 	for i in range(20):
 		bitmap.append(PackedByteArray([0]))
-		bitmap[i].resize(32)
+		bitmap[i].resize(64)
 	
 	for tile in tm.get_used_cells(0):
 		var target_y = tile[0] / 8
@@ -52,7 +52,9 @@ func generate_map_json():
 		var hex = i.hex_encode()
 		hexmap.append([
 			hex.substr(0, 32),
-			hex.substr(32, 32)
+			hex.substr(32, 32),
+			hex.substr(64, 32),
+			hex.substr(96, 32)
 		])
 
 	map_json = hexmap

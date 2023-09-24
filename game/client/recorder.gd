@@ -5,7 +5,7 @@ var event_log = []
 var map_data = []
 
 enum Events {
-	JUMP,
+	JUMP=1,
 	GAME_OVER
 }
 
@@ -24,8 +24,8 @@ func _on_start_game():
 func _on_end_game(distance: float):
 	event_log.append(
 		{
-			frame= game_tick,
-			event= "GAME_OVER"
+			f= game_tick,
+			e= Events.GAME_OVER
 		}
 	)
 	print_debug(event_log)
@@ -34,19 +34,32 @@ func _on_end_game(distance: float):
 func _on_player_jump():
 	event_log.append(
 		{
-			frame= game_tick,
-			event= "JUMP"
+			f= game_tick,
+			e= Events.JUMP
 		}
 	)
 
 
 func publish_game_log():
+
+	var packed_log = PackedByteArray([0])
+	packed_log.resize(event_log.size()*2)
+	for i in range(0, event_log.size()):
+		var event = PackedByteArray([0, 0])
+		# Embed frame number in first 12 bits
+		event[0] = (event_log[i].f >> 4)
+		event[1] = (event_log[i].f & 31) << 4
+		# Add event ID to remaining 4
+		event[1] |= event_log[i].e
+		print_debug(event)
+		packed_log[(i)*2] = event[0]
+		packed_log[(i)*2+1] = event[1]
 	var log = JSON.stringify({
-		events = event_log,
-		map = map_data
+		distance = Globals.distance,
+		events = packed_log
 	})
-	print_debug(log)
-	JavaScriptBridge.eval("window.submitScore(" + log + ")")
+	print_debug(packed_log)
+	JavaScriptBridge.eval("window.submitScore(" + str(log) + ")")
 
 
 func _physics_process(_delta):

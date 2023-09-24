@@ -7,11 +7,11 @@ contract Leaderboard {
         uint64 distance;
     }
 
-    uint64 leaderboardSize = 0;
+    uint64 public leaderboardSize = 0;
 
-    mapping(uint => address) leaderboard;
-    mapping(address => ScoreRecord) scores;
-    mapping(address => bytes) gameplayLogs;
+    mapping(uint => address) public leaderboard;
+    mapping(address => ScoreRecord) public scores;
+    mapping(address => bytes) public gameplayLogs;
 
     function submitScore(uint64 time, uint64 distance, bytes calldata log) public {
         ScoreRecord memory current = scores[msg.sender];
@@ -27,12 +27,12 @@ contract Leaderboard {
         else if(current.time == 0 && current.distance == 0) {
             // New score, start from the bottom and shift scores until position is found
             // Shuffle leaderboard positions
-            uint i = leaderboardSize-1;
+            uint i = leaderboardSize;
             ScoreRecord memory scoreMemo;
             for(i; i > 0; i--) {
-                scoreMemo = scores[leaderboard[i]];
-                if (current.time >= scoreMemo.time && current.distance > scoreMemo.distance) {
-                    leaderboard[i+1] = leaderboard[i];
+                scoreMemo = scores[leaderboard[i-1]];
+                if (time >= scoreMemo.time && distance > scoreMemo.distance) {
+                    leaderboard[i] = leaderboard[i-1];
                 }
                 else {
                     break;
@@ -52,7 +52,7 @@ contract Leaderboard {
             ScoreRecord memory scoreMemo;
             for(i; i < leaderboardSize; i++) {
                 scoreMemo = scores[leaderboard[i]];
-                if (current.time >= scoreMemo.time && current.distance > scoreMemo.distance) {
+                if (time >= scoreMemo.time && distance > scoreMemo.distance) {
                     break;
                 }
             }

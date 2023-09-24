@@ -107,8 +107,8 @@ func publish_gameplay_result(dist):
 		print(payload)
 		var cast_output = []
 		var exit_code = OS.execute(
-			"python3",
-			PackedStringArray([ "cast.py", 
+			"cast",
+			PackedStringArray([ "calldata", "submitScore(uint64,uint64,bytes calldata)",
 			str(submitted_args.time), str(submitted_args.distance), "0x" + str(submitted_args.event_log.hex_encode())]),
 			cast_output,
 			true

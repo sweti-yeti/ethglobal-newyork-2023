@@ -4,6 +4,11 @@ var game_tick = 0
 var event_log = []
 var map_data = []
 
+enum Events {
+	JUMP,
+	GAME_OVER
+}
+
 func _ready():
 	Signals.start_game.connect(_on_start_game)
 	Signals.player_jumped.connect(_on_player_jump)
@@ -20,7 +25,6 @@ func _on_end_game(distance: float):
 	event_log.append(
 		{
 			frame= game_tick,
-			distance=distance,
 			event= "GAME_OVER"
 		}
 	)
@@ -42,7 +46,7 @@ func publish_game_log():
 		map = map_data
 	})
 	print_debug(log)
-	JavaScriptBridge.eval("window.submitScore()")
+	JavaScriptBridge.eval("window.submitScore(" + log + ")")
 
 
 func _physics_process(_delta):

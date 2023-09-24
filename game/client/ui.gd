@@ -31,5 +31,5 @@ func _on_player_died(_distance):
 	load_ui(game_over_gui)
 
 
-func _on_player_won():
+func _on_player_won(_distance):
 	load_ui(game_over_gui)

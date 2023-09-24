@@ -11,13 +11,13 @@ variable "DOCKER_ORGANIZATION" {
 }
 
 target "server" {
-  tags = ["${DOCKER_ORGANIZATION}/dapp:godot-server-${TAG}-server"]
+  tags = ["${DOCKER_ORGANIZATION}/dapp:godot-onchain-${TAG}-server"]
 }
 
 target "console" {
-  tags = ["${DOCKER_ORGANIZATION}/dapp:godot-server-${TAG}-console"]
+  tags = ["${DOCKER_ORGANIZATION}/dapp:godot-onchain-${TAG}-console"]
 }
 
 target "machine" {
-  tags = ["${DOCKER_ORGANIZATION}/dapp:godot-server-${TAG}-machine"]
+  tags = ["${DOCKER_ORGANIZATION}/dapp:godot-onchain-${TAG}-machine"]
 }

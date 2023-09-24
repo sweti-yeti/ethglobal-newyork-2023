@@ -1,6 +1,7 @@
 extends Node2D
 
 var rollup_server = OS.get_environment("ROLLUP_HTTP_SERVER_URL")
+var leaderboard_contract = "0xdeadbeef"
 # Called when the node enters the scene tree for the first time.
 
 var finish_request_args = {
@@ -62,7 +63,7 @@ func _http_request_completed(result, response_code, headers, body:PackedByteArra
 			handle_inspect(response["data"])
 
 
-func _cartesi_notice_completed(result, response_code, headers, body:PackedByteArray):
+func _cartesi_advance_completed(result, response_code, headers, body:PackedByteArray):
 	print("Result: ", result)
 	print("Body: ", body)
 	query_state()
@@ -75,19 +76,29 @@ func _cartesi_inspect_completed(result, response_code, headers, body:PackedByteA
 
 
 func handle_advance(data):
-	print_debug(data)
+	print("Payload: ", data["payload"])
 	var http_request = HTTPRequest.new()
 	add_child(http_request)
-	http_request.request_completed.connect(self._cartesi_notice_completed)
-
-	# Perform the HTTP request. The URL below returns a PNG image as of writing.
-	var error = http_request.request(
-		rollup_server + "/notice",
-		finish_request_args.custom_headers,
-		finish_request_args.method,
-		JSON.stringify({
+	http_request.request_completed.connect(self._cartesi_advance_completed)
+	
+	# If the score validation fails, add a notice
+	# Else, add a voucher
+	var args = {
+		url = rollup_server + "/voucher",
+		header = finish_request_args.custom_headers,
+		method = finish_request_args.method,
+		request_data = JSON.stringify({
+			destination = leaderboard_contract,
 			payload = data["payload"]
 		})
+	}
+	print("Sending voucher: ", args)
+	
+	var error = http_request.request(
+		args.url,
+		args.header,
+		args.method,
+		args.request_data
 	)
 
 

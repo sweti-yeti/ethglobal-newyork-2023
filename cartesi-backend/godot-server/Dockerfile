@@ -6,5 +6,3 @@ WORKDIR /opt/cartesi/dapp
 COPY ./server .
 
 COPY ./entrypoint.sh .
-
-RUN ls -l

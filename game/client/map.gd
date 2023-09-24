@@ -40,7 +40,7 @@ func generate_map_json():
 	
 	for i in range(20):
 		bitmap.append(PackedByteArray([0]))
-		bitmap[i].resize(64)
+		bitmap[i].resize(32)
 	
 	for tile in tm.get_used_cells(0):
 		var target_y = tile[0] / 8
@@ -52,18 +52,16 @@ func generate_map_json():
 		var hex = i.hex_encode()
 		hexmap.append([
 			hex.substr(0, 32),
-			hex.substr(32, 32),
-			hex.substr(64, 32),
-			hex.substr(96, 32)
+			hex.substr(32, 32)
 		])
 
-	map_json = JSON.stringify(hexmap)
+	map_json = hexmap
 
 
 func load_map_json():
 	var tm:TileMap = $TileMap
 	Recorder.map_data = map_json
-	var hexmap = JSON.parse_string(map_json)
+	var hexmap = map_json
 	for r in hexmap.size():
 		var row = hexmap[r]
 		for c in row.size():
@@ -75,5 +73,4 @@ func load_map_json():
 					var bit = 1 << (7-k)
 					if byte & bit > 0:
 						var coords = Vector2i((c*16+i)*8+k, r)
-						print_debug("Tile at: ", coords)
 						tm.set_cell(0, coords, 0, Vector2i(3,3))

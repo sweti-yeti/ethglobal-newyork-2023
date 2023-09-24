@@ -2,7 +2,8 @@ extends Node2D
 
 var rollup_server = OS.get_environment("ROLLUP_HTTP_SERVER_URL")
 var leaderboard_contract = "0x7773a4B9C0B86AF9314a8C923930Ab238945f7a6"
-var submitScoreSelector = ""
+var submitScoreSelector = "0x56117f74"
+var submitScoreSelectorRaw = "submitScore(uint64,uint64,bytes calldata)"
 # Called when the node enters the scene tree for the first time.
 
 var finish_request_args = {
@@ -14,6 +15,7 @@ var finish_request_args = {
 	})
 }
 
+var submitted_args
 var submitted_distance = -1
 
 func _ready():
@@ -83,16 +85,14 @@ func handle_advance(data):
 	print("Payload: ", data["payload"])
 
 	var payload:PackedByteArray = data["payload"].substr(2).hex_decode()
-	print("Parsed payload: ", payload)
 	var distance = (payload[0] << 8) + (payload[1])
-	
-	print("Parse distance: ", distance)
 	payload.remove_at(0)
 	payload.remove_at(0)
+
 	var time = (payload[0] << 8) + (payload[1])
-	print("Parse time: ", time)
 	payload.remove_at(0)
 	payload.remove_at(0)
+
 	simulate_gameplay(payload, distance, time)
 
 
@@ -102,9 +102,19 @@ func publish_gameplay_result(dist):
 	add_child(http_request)
 	http_request.request_completed.connect(self._cartesi_advance_completed)
 	
-	if dist == submitted_distance:
+	if dist == submitted_args.distance:
 		var payload = "Game verified"
 		print(payload)
+		var cast_output = []
+		var exit_code = OS.execute(
+			"cast",
+			PackedStringArray([ "calldata", "submitScore(uint64,uint64,bytes calldata)",
+			str(submitted_args.time), str(submitted_args.distance), "0x" + str(submitted_args.event_log.hex_encode())]),
+			cast_output,
+			true
+		)
+		print_debug("Exit code: ", exit_code)
+		print_debug("Cast output: ", cast_output)
 		var args = {
 			#url = rollup_server + "/voucher",
 			url = rollup_server + "/notice",
@@ -158,7 +168,11 @@ func handle_inspect(data):
 	)
 
 func simulate_gameplay(event_log: PackedByteArray, distance: int, time: int) -> void:
-	submitted_distance = distance
+	submitted_args = {
+		distance= distance,
+		time= time,
+		event_log = event_log
+	}
 	# Pass event list to simulator
 	var event_queue = []
 	for i in event_log.size()/2:
@@ -170,7 +184,7 @@ func simulate_gameplay(event_log: PackedByteArray, distance: int, time: int) -> 
 			e=event_id
 		})
 	
-	print("Expected distance: ", submitted_distance)
+	print("Expected distance: ", submitted_args.distance)
 	print("Expected time: ", time)
 	print("Simulating event log: ", event_queue)
 	$Simulator.event_queue = event_queue

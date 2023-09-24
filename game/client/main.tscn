@@ -14,4 +14,4 @@ script = ExtResource("1_gev0d")
 [node name="Map" parent="." instance=ExtResource("2_l2jcq")]
 
 [node name="SpawnPoint" type="Marker2D" parent="."]
-position = Vector2(81, 552)
+position = Vector2(64, 576)

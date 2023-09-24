@@ -10,3 +10,4 @@ func _on_restart_pressed():
 
 func _on_submit_pressed():
 	Recorder.publish_game_log()
+	$VBoxContainer/HBoxContainer/Submit.disabled = true

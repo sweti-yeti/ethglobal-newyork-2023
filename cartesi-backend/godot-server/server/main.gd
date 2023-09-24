@@ -12,10 +12,18 @@ var finish_request_args = {
 	})
 }
 
+
 func _ready():
 	print("Hello from Godot on Cartesi")
-	# Create an HTTP request node and connect its completion signal.
+	Signals.start_game.connect(_on_start_game)
 	query_state()
+	#simulate_gameplay(event_log, distance, time)
+
+
+func _on_start_game():
+	var player = load("res://player.tscn").instantiate()
+	add_child(player)
+	player.position = $SpawnPoint.global_position
 
 
 func query_state():
@@ -98,3 +106,20 @@ func handle_inspect(data):
 			payload = data["payload"]
 		})
 	)
+
+func simulate_gameplay(event_log: PackedByteArray, distance: int, time: int) -> void:
+	# Pass event list to simulator
+	var event_queue = []
+	for i in event_log.size()/2:
+		var event_id = event_log[(i*2)+1] & 31
+		var frame = event_log[i*2] << 4
+		frame |= event_log[(i*2)+1] >> 4
+		event_queue.append({
+			f=frame,
+			e=event_id
+		})
+	print("Simulating event log: ", event_queue)
+	$Simulator.event_queue = event_queue
+	# Send start signal to spawn player
+	Signals.start_game.emit()
+	# Re-record events & validate against distance/time

@@ -7,8 +7,8 @@ var map_json = null
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Signals.start_game.connect(_on_game_start)
-	generate_map_json()
-	load_map_json()
+	#generate_map_json()
+	#load_map_json()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -57,13 +57,13 @@ func generate_map_json():
 			hex.substr(96, 32)
 		])
 
-	map_json = JSON.stringify(hexmap)
+	map_json = hexmap
 
 
 func load_map_json():
 	var tm:TileMap = $TileMap
 	Recorder.map_data = map_json
-	var hexmap = JSON.parse_string(map_json)
+	var hexmap = map_json
 	for r in hexmap.size():
 		var row = hexmap[r]
 		for c in row.size():
@@ -75,5 +75,4 @@ func load_map_json():
 					var bit = 1 << (7-k)
 					if byte & bit > 0:
 						var coords = Vector2i((c*16+i)*8+k, r)
-						print_debug("Tile at: ", coords)
 						tm.set_cell(0, coords, 0, Vector2i(3,3))

@@ -56,6 +56,7 @@ func publish_game_log():
 		packed_log[(i)*2+1] = event[1]
 	var log = JSON.stringify({
 		distance = Globals.distance,
+		time = event_log[event_log.size()-1].f,
 		events = packed_log
 	})
 	print_debug(packed_log)

@@ -15,6 +15,12 @@ run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Globals="*res://Globals.gd"
+Signals="*res://Signals.gd"
+Recorder="*res://recorder.gd"
+
 [physics]
 
 common/physics_ticks_per_second=30

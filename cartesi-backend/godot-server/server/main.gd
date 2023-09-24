@@ -107,8 +107,8 @@ func publish_gameplay_result(dist):
 		print(payload)
 		var cast_output = []
 		var exit_code = OS.execute(
-			"cast",
-			PackedStringArray([ "calldata", "submitScore(uint64,uint64,bytes calldata)",
+			"python3",
+			PackedStringArray([ "cast.py", 
 			str(submitted_args.time), str(submitted_args.distance), "0x" + str(submitted_args.event_log.hex_encode())]),
 			cast_output,
 			true
@@ -122,7 +122,7 @@ func publish_gameplay_result(dist):
 			method = finish_request_args.method,
 			request_data = JSON.stringify({
 				#destination = leaderboard_contract,
-				payload = "0x" + payload.to_utf8_buffer().hex_encode()
+				payload = cast_output
 			})
 		}
 		print("Sending voucher: ", args)

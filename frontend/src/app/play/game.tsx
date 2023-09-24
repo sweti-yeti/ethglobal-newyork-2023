@@ -10,15 +10,17 @@ interface IGameContext {
 
 const GameContext = createContext<IGameContext>({
 	submitScore: async (game_log) => {
-		let leaderboardAddress = "0x3c10a622f33d762f452109b9ea4485e3d271e471";
+		let inputBoxAddress = "0x3c10a622f33d762f452109b9ea4485e3d271e471";
+		let cartesiDappAddress = "0x3c10a622f33d762f452109b9ea4485e3d271e471";
+		let cartesiNodeUrl = "127.0.0.1:8545";
 		console.log("Godot called this!")
 		console.log(game_log)
-		// const contract = new ethers.Contract( leaderboardAddress, abi, provider)
+		// const contract = new ethers.Contract( inputBoxAddress , inputBoxAbi, provider)
 		//   try {
-		// 	const minTx = await contract.populateTransaction.submitScore(game_log.time, game_log.distance, game_log.events);
+		// 	const minTx = await contract.populateTransaction.addInput(game_log);
 		// 	console.log(minTx.data);
 		// 	const tx1 = {
-		// 	  to: leaderboardAddress,
+		// 	  to: inputBoxAddress,
 		// 	  data: minTx.data,
 		// 	};
 
@@ -55,8 +57,12 @@ const GameContext = createContext<IGameContext>({
 		// 	run voucher
 	},
 	getHighscores: async () => {
+		let leaderboardAddress = "0x7773a4B9C0B86AF9314a8C923930Ab238945f7a6";
+		// const contract = new ethers.Contract( leaderboardAddress , leaderboardAbi, provider)
 	},
 	getPlayerScore: async () => {
+		let leaderboardAddress = "0x7773a4B9C0B86AF9314a8C923930Ab238945f7a6";
+		// const contract = new ethers.Contract( leaderboardAddress , leaderboardAbi, provider)
 	}
 })
 

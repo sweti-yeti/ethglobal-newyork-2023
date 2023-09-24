@@ -1,7 +1,8 @@
 extends Node2D
 
 var rollup_server = OS.get_environment("ROLLUP_HTTP_SERVER_URL")
-var leaderboard_contract = "0xdeadbeef"
+var leaderboard_contract = "0x7773a4B9C0B86AF9314a8C923930Ab238945f7a6"
+var submitScoreSelector = ""
 # Called when the node enters the scene tree for the first time.
 
 var finish_request_args = {
@@ -13,10 +14,13 @@ var finish_request_args = {
 	})
 }
 
+var submitted_distance = -1
 
 func _ready():
 	print("Hello from Godot on Cartesi")
 	Signals.start_game.connect(_on_start_game)
+	Signals.player_died.connect(publish_gameplay_result)
+	Signals.player_won.connect(publish_gameplay_result)
 	query_state()
 	#simulate_gameplay(event_log, distance, time)
 
@@ -77,30 +81,65 @@ func _cartesi_inspect_completed(result, response_code, headers, body:PackedByteA
 
 func handle_advance(data):
 	print("Payload: ", data["payload"])
+
+	var payload:PackedByteArray = data["payload"].substr(2).hex_decode()
+	print("Parsed payload: ", payload)
+	var distance = (payload[0] << 8) + (payload[1])
+	
+	print("Parse distance: ", distance)
+	payload.remove_at(0)
+	payload.remove_at(0)
+	var time = (payload[0] << 8) + (payload[1])
+	print("Parse time: ", time)
+	payload.remove_at(0)
+	payload.remove_at(0)
+	simulate_gameplay(payload, distance, time)
+
+
+func publish_gameplay_result(dist):
+	print("Gameplay complete, reached ", dist)
 	var http_request = HTTPRequest.new()
 	add_child(http_request)
 	http_request.request_completed.connect(self._cartesi_advance_completed)
 	
-	# If the score validation fails, add a notice
-	# Else, add a voucher
-	var args = {
-		url = rollup_server + "/voucher",
-		header = finish_request_args.custom_headers,
-		method = finish_request_args.method,
-		request_data = JSON.stringify({
-			destination = leaderboard_contract,
-			payload = data["payload"]
-		})
-	}
-	print("Sending voucher: ", args)
-	
-	var error = http_request.request(
-		args.url,
-		args.header,
-		args.method,
-		args.request_data
-	)
-
+	if dist == submitted_distance:
+		var payload = "Game verified"
+		print(payload)
+		var args = {
+			#url = rollup_server + "/voucher",
+			url = rollup_server + "/notice",
+			header = finish_request_args.custom_headers,
+			method = finish_request_args.method,
+			request_data = JSON.stringify({
+				#destination = leaderboard_contract,
+				payload = "0x" + payload.to_utf8_buffer().hex_encode()
+			})
+		}
+		print("Sending voucher: ", args)
+		var error = http_request.request(
+			args.url,
+			args.header,
+			args.method,
+			args.request_data
+		)
+	else:
+		var payload = "Gameplay invalid"
+		print(payload)
+		var args = {
+			url = rollup_server + "/notice",
+			header = finish_request_args.custom_headers,
+			method = finish_request_args.method,
+			request_data = JSON.stringify({
+				payload = "0x" + payload.to_utf8_buffer().hex_encode()
+			})
+		}
+		print("Sending notice: ", args)
+		var error = http_request.request(
+			args.url,
+			args.header,
+			args.method,
+			args.request_data
+		)
 
 func handle_inspect(data):
 	print_debug(data)
@@ -119,6 +158,7 @@ func handle_inspect(data):
 	)
 
 func simulate_gameplay(event_log: PackedByteArray, distance: int, time: int) -> void:
+	submitted_distance = distance
 	# Pass event list to simulator
 	var event_queue = []
 	for i in event_log.size()/2:
@@ -129,6 +169,9 @@ func simulate_gameplay(event_log: PackedByteArray, distance: int, time: int) -> 
 			f=frame,
 			e=event_id
 		})
+	
+	print("Expected distance: ", submitted_distance)
+	print("Expected time: ", time)
 	print("Simulating event log: ", event_queue)
 	$Simulator.event_queue = event_queue
 	# Send start signal to spawn player

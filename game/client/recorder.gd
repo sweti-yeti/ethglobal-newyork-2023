@@ -54,13 +54,21 @@ func publish_game_log():
 		print_debug(event)
 		packed_log[(i)*2] = event[0]
 		packed_log[(i)*2+1] = event[1]
-	var log = JSON.stringify({
+	var log = {
 		distance = Globals.distance,
 		time = event_log[event_log.size()-1].f,
 		events = packed_log
-	})
-	print_debug(packed_log)
-	JavaScriptBridge.eval("window.submitScore(" + str(log) + ")")
+	}
+	var payload = PackedByteArray([0, 0, 0, 0])
+	payload[0] = log.distance >> 8
+	payload[1] = log.distance & 255
+	payload[2] = log.time >> 8
+	payload[3] = log.time & 255
+	payload += log.events
+	
+	print_debug(payload)
+	print_debug(payload.hex_encode())
+	JavaScriptBridge.eval("window.submitScore(" + str(payload) + ")")
 
 
 func _physics_process(_delta):
